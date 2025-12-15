@@ -1,0 +1,11 @@
+sources:
+  - name: "Zenodo OAI demo"
+    type: "oai_pmh"
+    endpoint: "https://zenodo.org/oai2d"
+    metadata_prefix: "oai_datacite"
+    set: null
+    max_records: 100
+    fulltext:
+      enabled: true
+      allowed_domains: ["zenodo.org"]
+      max_mb: 80

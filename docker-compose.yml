@@ -1,0 +1,30 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports: ["3000:8080"]
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    depends_on: [ollama]
+    volumes: ["openwebui:/app/backend/data"]
+
+  retriever:
+    build: ./app
+    ports: ["8000:8000"]
+    volumes:
+      - ./data:/data
+    environment:
+      - CHROMA_DIR=/data/chroma
+      - OLLAMA_BASE_URL=http://ollama:11434
+      # FIX: Explicitly set Chroma's internal persist directory env var
+      # This resolves the `self._settings.require("persist_directory")` error
+      - CHROMA_SERVER_NO_COPY_DIRECTORY=/data/chroma
+    depends_on: [ollama]
+
+volumes:
+  ollama:
+  openwebui:
